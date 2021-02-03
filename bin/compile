@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ex
 
 indent() {
   sed -u 's/^/       /'
@@ -38,7 +39,6 @@ PACKAGE_FILE="$PACKAGE_DIR.tgz"
 PACKAGE_URL="https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs$GHOSTSCRIPT_VERSION_NUMBERS_ONLY/$PACKAGE_FILE"
 
 if [ ! -f $CACHE_FILE ]; then
-  echo "-----> Downloading Ghostscript from $PACKAGE_URL"
   wget $PACKAGE_URL -P $VENDOR_DIR | indent
 
   if [ ! -f $VENDOR_DIR/$PACKAGE_FILE ]; then
@@ -47,17 +47,14 @@ if [ ! -f $CACHE_FILE ]; then
     exit 1;
   fi
 
-  echo "-----> Extracting Ghostscript from $VENDOR_DIR/$PACKAGE_FILE"
+  cd $VENDOR_DIR
   tar xvf $VENDOR_DIR/$PACKAGE_FILE | indent
-
-  echo "-----> Caching Ghostscript installation"
   mv $VENDOR_DIR/$PACKAGE_DIR/gs-$GHOSTSCRIPT_VERSION_NUMBERS_ONLY-linux-x86_64 $CACHE_FILE
 fi
 
-echo "-----> Copying binaries"
+cd $BUILD_DIR
 cp $CACHE_FILE $INSTALL_FILE
 
-echo "-----> Setting up profile for Ghostscript"
 mkdir -p $PROFILE_DIR
 echo "export PATH=\"\$HOME/vendor/gs/bin:\$PATH\"" > $PROFILE_DIR/ghostscript.sh
 
