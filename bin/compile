@@ -1,11 +1,32 @@
 #!/usr/bin/env bash
 # bin/compile <build-dir> <cache-dir>
 
-echo "-----> Installing Ghostscript 9.50"
 
 BUILD_DIR=$1
-PACKAGE="https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs950/ghostscript-9.50-linux-x86_64.tgz"
-BINARY="ghostscript-9.50-linux-x86_64/gs-950-linux-x86_64"
+CACHE_DIR=$2
+ENV_DIR=$3
+
+export_env_dir() {
+  env_dir=$1
+  acceptlist_regex=${2:-''}
+  denylist_regex=${3:-'^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH)$'}
+  if [ -d "$env_dir" ]; then
+    for e in $(ls $env_dir); do
+      echo "$e" | grep -E "$acceptlist_regex" | grep -qvE "$denylist_regex" &&
+      export "$e=$(cat $env_dir/$e)"
+      :
+    done
+  fi
+}
+
+export_env_dir $ENV_DIR
+
+GHOSTSCRIPT_VERSION="${GHOSTSCRIPT_VERSION:-9.53.3}"
+GHOSTSCRIPT_VERSION_NUMBERS_ONLY=${VERSION//[.]/}
+
+echo "-----> Installing Ghostscript $GHOSTSCRIPT_VERSION"
+PACKAGE="https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs$GHOSTSCRIPT_VERSION_NUMBERS_ONLY/ghostscript-$GHOSTSCRIPT_VERSION-linux-x86_64.tgz"
+BINARY="ghostscript-$GHOSTSCRIPT_VERSION-linux-x86_64/gs-$GHOSTSCRIPT_VERSION_NUMBERS_ONLY-linux-x86_64"
 LOCATION="$BUILD_DIR/vendor/gs/bin"
 
 mkdir -p $LOCATION
