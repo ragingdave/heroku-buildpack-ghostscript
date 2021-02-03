@@ -32,6 +32,7 @@ INSTALL_DIR="$VENDOR_DIR/gs/bin"
 mkdir -p $INSTALL_DIR
 INSTALL_FILE="$INSTALL_DIR/gs"
 CACHE_FILE="$CACHE_DIR/gs"
+PROFILE_DIR="$BUILD_DIR/.profile.d"
 PACKAGE_DIR="ghostscript-$GHOSTSCRIPT_VERSION-linux-x86_64"
 PACKAGE_FILE="$PACKAGE_DIR.tgz"
 PACKAGE_URL="https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs$GHOSTSCRIPT_VERSION_NUMBERS_ONLY/$PACKAGE_FILE"
@@ -57,5 +58,8 @@ echo "-----> Copying binaries"
 cp $CACHE_FILE $INSTALL_FILE
 
 echo "-----> Setting up profile for Ghostscript"
-mkdir -p $BUILD_DIR/.profile.d
-echo "export PATH=\"\$HOME/vendor/gs/bin:\$PATH\"" > $BUILD_DIR/.profile.d/ghostscript.sh
+mkdir -p $PROFILE_DIR
+echo "export PATH=\"\$HOME/vendor/gs/bin:\$PATH\"" > $PROFILE_DIR/ghostscript.sh
+
+echo "-----> Done."
+echo ""
