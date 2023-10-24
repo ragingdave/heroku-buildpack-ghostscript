@@ -54,7 +54,7 @@ if [ ! -f $CACHE_FILE ]; then
 
   # build from source
   ./configure
-  make
+  make -j$(nproc)
 
   mv $VENDOR_DIR/$PACKAGE_DIR/bin/gs $CACHE_FILE
 
