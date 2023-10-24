@@ -57,6 +57,10 @@ if [ ! -f $CACHE_FILE ]; then
   make
 
   mv $VENDOR_DIR/$PACKAGE_DIR/bin/gs $CACHE_FILE
+
+  # cleanup
+  rm -rf $VENDOR_DIR/$PACKAGE_DIR
+  rm -rf $VENDOR_DIR/$PACKAGE_FILE
 fi
 
 cd $BUILD_DIR
