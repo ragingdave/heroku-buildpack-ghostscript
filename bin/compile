@@ -24,7 +24,7 @@ export_env_dir() {
 
 export_env_dir $ENV_DIR
 
-GHOSTSCRIPT_VERSION="${GHOSTSCRIPT_VERSION:-9.53.3}"
+GHOSTSCRIPT_VERSION="${GHOSTSCRIPT_VERSION:-10.02.0}"
 GHOSTSCRIPT_VERSION_NUMBERS_ONLY=${GHOSTSCRIPT_VERSION//[.]/}
 echo "-----> Installing Ghostscript $GHOSTSCRIPT_VERSION"
 
@@ -34,8 +34,9 @@ mkdir -p $INSTALL_DIR
 INSTALL_FILE="$INSTALL_DIR/gs"
 CACHE_FILE="$CACHE_DIR/gs"
 PROFILE_DIR="$BUILD_DIR/.profile.d"
-PACKAGE_DIR="ghostscript-$GHOSTSCRIPT_VERSION-linux-x86_64"
-PACKAGE_FILE="$PACKAGE_DIR.tgz"
+PACKAGE_DIR="ghostscript-$GHOSTSCRIPT_VERSION"
+PACKAGE_FILE="$PACKAGE_DIR.tar.gz"
+# https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10020/ghostscript-10.02.0.tar.gz
 PACKAGE_URL="https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs$GHOSTSCRIPT_VERSION_NUMBERS_ONLY/$PACKAGE_FILE"
 
 if [ ! -f $CACHE_FILE ]; then
@@ -49,7 +50,13 @@ if [ ! -f $CACHE_FILE ]; then
 
   cd $VENDOR_DIR
   tar xvf $VENDOR_DIR/$PACKAGE_FILE | indent
-  mv $VENDOR_DIR/$PACKAGE_DIR/gs-$GHOSTSCRIPT_VERSION_NUMBERS_ONLY-linux-x86_64 $CACHE_FILE
+  cd $VENDOR_DIR/$PACKAGE_DIR
+
+  # build from source
+  ./configure
+  make
+
+  mv $VENDOR_DIR/$PACKAGE_DIR/bin/gs $CACHE_FILE
 fi
 
 cd $BUILD_DIR
